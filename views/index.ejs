@@ -34,7 +34,8 @@
 
     <hr>
     <h2>Upload your dorm</h2>
-    <form id="dormForm" method="GET" action="https://cs.wellesley.edu/~cs304flask/cgi-bin/dump.cgi">
+    <form id="dormForm" method="POST" action="/submit">
+        <p><label>Wellesley username: <input name="user"></label></p>
         <p><label>Residence Hall: 
             <select name="reshall">
                 <option value="">Select building</option>
