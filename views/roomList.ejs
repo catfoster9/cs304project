@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dorm Demystified</title>
+    <!-- load local stylesheet (css) -->
+    <link rel="stylesheet" href="/styles.css">
+    <!-- loading jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+    <!--Computes average room rating-->
+    <% function avgRating(arrOfDicts) {
+        let sum = 0;
+        arrOfDicts.forEach((review) => {
+            sum += parseInt(review.rating);
+        });
+        return sum/arrOfDicts.length;
+    }%>
+
+     <!--Computes mode of sunlight levels-->
+     <% function avgSun(arrOfDicts) {
+        let goodCount = 0;
+        let okayCount = 0;
+        let badCount = 0;
+        let max = 'good';
+        arrOfDicts.forEach((review) => {
+            if (review.sunlightLevel == 'good') {
+                goodCount += 1;
+            } else if (review.sunlightLevel == 'okay') {
+                okayCount += 1;
+            } else {
+                badCount += 1;
+            }
+        });
+        if (okayCount > goodCount) {
+            max = 'okay';
+            if (badCount > okayCount) {
+                max = 'bad';
+            }
+        } else if (badCount > goodCount) {
+            max = 'bad';
+            if (okayCount > badCount) {
+                max = 'okay';
+            }
+        }
+        return max;
+    }%>
+
+     <!--Computes mode of noise levels-->
+     <% function avgNoise(arrOfDicts) {
+        let loudCount = 0;
+        let okayCount = 0;
+        let quietCount = 0;
+        let max = 'quiet';
+        arrOfDicts.forEach((review) => {
+            if (review.noiseLevel == 'quiet') {
+                quietCount += 1;
+            } else if (review.noiseLevel == 'okay') {
+                okayCount += 1;
+            } else {
+                loudCount += 1;
+            }
+        });
+        if (okayCount > quietCount) {
+            max = 'okay';
+            if (loudCount > okayCount) {
+                max = 'loud';
+            }
+        } else if (loudCount > quietCount) {
+            max = 'loud';
+            if (okayCount > loudCount) {
+                max = 'okay';
+            }
+        }
+        return max;
+    }%>
+
+    <h1>Dorm Demystified</h1>
+
+    <h2> Rooms in <%= reshall %>:</h2>
+
+    <ol>
+        <% rooms.forEach( (room) => {%>
+            <li> <%= reshall %> <%= room.roomNum %> has an average rating of <%= avgRating(room.reviews) %>, 
+                <%= avgSun(room.reviews) %> sunlight, and <%= avgNoise(room.reviews) %> noise level. </li>
+        <% }); %>
+    </ol>
+
+    <!-- load local js -->
+    <script src="/main.js"></script>
+</body>
+</html>

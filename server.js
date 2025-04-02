@@ -85,14 +85,24 @@ app.post('/submit', async (req, res) => {
       };
     const db = await Connection.open(mongoUri, DORM);
     const result = await db.collection(ROOMS).updateOne(
-                            {reshall, roomNum}, // finds documents with same reshall and roomNum 
+                            {reshall, roomNum}, // find documents with same reshall and roomNum 
                             { 
-                                $push: {reviews: review}, // creates a list of reviews
+                                $push: {reviews: review}, // create a list of reviews
                                 $setOnInsert: {reshall, roomNum}, // reshall and roomNum are not a list
                               },
                             {upsert: true} // insert if no reviews for the room already exist   
     );
     return res.send('Room saved to database!');
+});
+
+// route to browse rooms in a res hall
+app.get('/browse/:reshall', async (req, res) => {
+    const reshall = req.params.reshall.charAt(0).toUpperCase() + req.params.reshall.slice(1); // make first letter uppercase
+    const db = await Connection.open(mongoUri, DORM);
+    const rooms = await db.collection(ROOMS).find({reshall: reshall}).toArray(); 
+    return res.render('roomList.ejs',
+                        {rooms: rooms, 
+                        reshall: reshall});
 });
 
 // shows how logins might work by setting a value in the session
