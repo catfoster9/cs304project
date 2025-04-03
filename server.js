@@ -92,12 +92,11 @@ app.post('/submit', async (req, res) => {
                               },
                             {upsert: true} // insert if no reviews for the room already exist   
     );
-    return res.send('Room saved to database!');
 });
 
 // route to browse rooms in a res hall
-app.get('/browse/:reshall', async (req, res) => {
-    const reshall = req.params.reshall.charAt(0).toUpperCase() + req.params.reshall.slice(1); // make first letter uppercase
+app.get('/browse', async (req, res) => {
+    const reshall = req.query.value;
     const db = await Connection.open(mongoUri, DORM);
     const rooms = await db.collection(ROOMS).find({reshall: reshall}).toArray(); 
     return res.render('roomList.ejs',
