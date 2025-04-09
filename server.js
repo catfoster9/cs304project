@@ -92,6 +92,7 @@ app.post('/submit', async (req, res) => {
                               },
                             {upsert: true} // insert if no reviews for the room already exist   
     );
+    res.redirect('/');
 });
 
 // route to browse rooms in a res hall
