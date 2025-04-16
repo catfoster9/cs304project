@@ -82,6 +82,10 @@
 
     <h2> Rooms in <%= reshall %>:</h2>
 
+    <form id="ratingFilter">
+
+    </form>
+
     <ol>
         <% rooms.forEach( (room) => {%>
             <li> <%= reshall %> <%= room.roomNum %> has an average rating of <%= avgRating(room.reviews) %>, 
