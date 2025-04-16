@@ -99,6 +99,7 @@ app.post('/submit', upload.single('photo'), async (req, res) => {
                             
 
     );
+    res.redirect('/');
 });
 
 
