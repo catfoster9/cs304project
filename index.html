@@ -4,22 +4,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="public/styles.css">
     <meta name=author content="Catherine Foster, Shawfong Hsu, Rachel Ren">
     <title>Dorm Demystified</title>
 </head>
 <body>
-
+    
 <main>
+    <%- include('views/partials/navbar') %>
     <h1>Dorm Demystified</h1>
 
     <h2>Browse dorms</h2>
     <h3>Quint</h3>
-        <input type="button" value="Beebe">
-        <input type="button" value="Cazenove">
-        <input type="button" value="Munger">
-        <input type="button" value="Pomeroy">
-        <input type="button" value="Shafer">
+        <button class="image-button">
+            <img src="images/Beebe.png" alt="Beebe" width="200">
+        </button>
+        <button class="image-button">
+            <img src="images/Cazenove.png" alt="Cazenove" width="200">
+        </button>
+        <button class="image-button">
+            <img src="images/Munger.png" alt="Munger" width="200">
+        </button>
+        <button class="image-button">
+            <img src="images/Pomeroy.png" alt="Pomeroy" width="200">
+        </button>
+        <button class="image-button">
+            <img src="images/Shafer.png" alt="Shafer" width="200">
+        </button>
     <h3>Tower Court</h3>
         <input type="button" value="Claflin">
         <input type="button" value="Lake House">
