@@ -2,47 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Node Starter</title>
+    <title>Dorm Demystified</title>
     <!-- load local stylesheet (css) -->
     <link rel="stylesheet" href="/styles.css">
     <!-- loading jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <p>Everything is fine.</p>
+    <h1>Dorm Demystified</h1>
 
-    <div id="logged-in">
-    <p>You are logged in as <span id="login-uid"><%= uid %></span>
-        <form method="post" action="/logout/"><input type="submit" value="logout"></form></p>
-    </div>
-    <div id="not-logged-in">
-    <p>You are not logged in.</p>
-    <form id="login_form" method="post" action="/set-uid/">
-        <p><label>uid <input name="uid"></label></p>
-        <input type="button" id="login-ajax" value="ajax">
+    <h2>Browse dorms</h2>
+    <h3>Quint</h3>
+
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Beebe">
     </form>
-    </div>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Cazenove">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Munger">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Pomeroy">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Shafer">
+    </form>
 
-    <p>You have visited <%= visits %> times.</p>
+    <h3>Tower Court</h3>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Claflin">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Lake House">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Severance">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Tower">
+    </form>
 
-    <h2>Links</h2>
+    <h3>East Side</h3>
 
-    <p><a href="/form/">a pizza form</a></p>
-    
-    <p><a href="/staffList/">staff listing</a></p>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Bates">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Freeman">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="McAfee">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Stone-Davis">
+    </form>
+
+    <h3>Language Houses</h3>
+
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="Casa Cervantes">
+    </form>
+    <form action="/browse" method="GET">
+        <input type="submit" name ="value" value="French House">
+    </form>
+
+
+    <hr>
+    <h2>Upload your dorm</h2>
+    <form id="dormForm" method="POST" action="/submit">
+        <p><label>Wellesley username: <input name="user"></label></p>
+        <p><label>Residence Hall: 
+            <select name="reshall">
+                <option value="">Select building</option>
+                <option value="Beebe">Beebe</option>
+                <option value="Cazenove">Cazenove</option>
+                <option value="Munger">Munger</option>
+                <option value="Pomeroy">Pomeroy</option>
+                <option value="Shafer">Shafer</option>
+                <option value="Claflin">Claflin</option>
+                <option value="Lake House">Lake House</option>
+                <option value="Severance">Severance</option>
+                <option value="Tower">Tower</option>
+                <option value="Bates">Bates</option>
+                <option value="Freeman">Freeman</option>
+                <option value="McAfee">McAfee</option>
+                <option value="Stone-Davis">Stone-Davis</option>
+                <option value="Casa Cervantes">Casa Cervantes</option>
+                <option value="French House">French House</option>
+            </select>
+        </label></p>
+        <p><label>Room Number: <input type=number name="room"></label></p>
+        <p><label>Overall Rating: 
+            <select name="rating">
+                <option value="">Select</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </label></p>
+        <p><label>Sunlight:
+            <select name="sunlight">
+                <option value="">Select</option>
+                <option value="good">Good</option>
+                <option value="okay">Okay</option>
+                <option value="bad">Bad</option>
+            </select>
+        </label></p>
+        <p><label>Noise level:
+            <select name="noise">
+                <option value="">Select</option>
+                <option value="loud">Loud</option>
+                <option value="okay">Okay</option>
+                <option value="quiet">Quiet</option>
+            </select>
+        </label></p>
+
+        <input type="file" id="image" name="filename" accept="image/*">
+        
+        <p><button type="submit">Submit</button></p>
+    </form>
 
     <!-- load local js -->
     <script src="/main.js"></script>
-    <script>
-        var uid = "<%= uid %>";
-        if(uid !== 'unknown') {
-            $("#logged-in").show();
-            $("#not-logged-in").hide();
-        } else {
-            $("#logged-in").hide();
-            $("#not-logged-in").show();
-        }
-    </script>
 </body>
 </html>
