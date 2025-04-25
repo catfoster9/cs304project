@@ -59,13 +59,16 @@ const DORM = 'dorm';
 const ROOMS = 'rooms';
 
 // main page. This shows the use of session cookies
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     let uid = req.session.uid || 'unknown';
     let visits = req.session.visits || 0;
     visits++;
     req.session.visits = visits;
-    console.log('uid', uid);
-    return res.render('index.ejs', {uid, visits});
+
+    const db = await Connection.open(mongoUri, DORM);
+    const history = await db.collection(ROOMS).find({}).toArray();
+
+    res.render('index.ejs', { uid, visits, submissions: history });
 });
 
 // route to submit room upload form
@@ -135,6 +138,16 @@ app.post('/set-uid-ajax/', (req, res) => {
     req.session.logged_in = true;
     console.log('logged in via ajax as ', req.body.uid);
     res.send({error: false});
+});
+
+app.post('/delete', async (req, res) => {
+    const reshall = req.body.reshall;
+    const roomNum = req.body.roomNum;
+
+    const db = await Connection.open(mongoUri, DORM);
+    await db.collection(ROOMS).deleteOne({ reshall: reshall, roomNum: roomNum });
+
+    res.redirect('/');
 });
 
 
