@@ -51,6 +51,58 @@ app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
+
+//file upload
+//Configure Multer from readings 
+
+app.use('/uploads', express.static('uploads')); // folder for static files 
+
+// configure storage property of Milter from readings 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        let parts = file.originalname.split('.');
+        let ext = parts[parts.length-1];
+        let hhmmss = timeString();
+        cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
+    }
+  })
+
+  
+// upload using milter module 
+var upload = multer({ storage: storage,
+// max fileSize in bytes, 
+limits: { fileSize: 1_000_000 } // 1MB
+});
+
+
+// full handler
+app.post('/upload', upload.single('photo'), async (req, res) => {
+    console.log('uploaded data', req.body);
+    console.log('file', req.file);
+    // insert file data into mongodb
+    const db = await Connection.open(mongoUri, DB);
+    const unprot = db.collection(UNPROT);
+    const result = await unprot.insertOne({title: req.body.title,
+                                           path: '/uploads/'+req.file.filename});
+    console.log('insertOne result', result);
+    return res.redirect('/');
+});
+//error handeling for file uploads 
+app.use((err, req, res, next) => {
+    console.log('error', err);
+    if(err.code === 'LIMIT_FILE_SIZE') {
+        console.log('file too big')
+        req.flash('error', 'file too big')
+        res.redirect('/')
+    } else {
+        console.error(err.stack)
+        res.status(500).send('Something went wrong!')
+    }
+})
+
 // ================================================================
 // custom routes here
 
@@ -161,53 +213,4 @@ app.listen(serverPort, function() {
     console.log(`open http://localhost:${serverPort}`);
 });
 
-//file upload
-//Configure Multer from readings 
 
-app.use('/uploads', express.static('uploads')); // folder for static files 
-
-// configure storage property of Milter from readings 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-        let parts = file.originalname.split('.');
-        let ext = parts[parts.length-1];
-        let hhmmss = timeString();
-        cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
-    }
-  })
-
-  
-// upload using milter module 
-var upload = multer({ storage: storage,
-// max fileSize in bytes, 
-limits: { fileSize: 1_000_000 } // 1MB
-});
-
-
-// full handler
-app.post('/upload', upload.single('photo'), async (req, res) => {
-    console.log('uploaded data', req.body);
-    console.log('file', req.file);
-    // insert file data into mongodb
-    const db = await Connection.open(mongoUri, DB);
-    const unprot = db.collection(UNPROT);
-    const result = await unprot.insertOne({title: req.body.title,
-                                           path: '/uploads/'+req.file.filename});
-    console.log('insertOne result', result);
-    return res.redirect('/');
-});
-//error handeling for file uploads 
-app.use((err, req, res, next) => {
-    console.log('error', err);
-    if(err.code === 'LIMIT_FILE_SIZE') {
-        console.log('file too big')
-        req.flash('error', 'file too big')
-        res.redirect('/')
-    } else {
-        console.error(err.stack)
-        res.status(500).send('Something went wrong!')
-    }
-})
