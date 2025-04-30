@@ -13,23 +13,36 @@
     <h1>Dorm Demystified</h1>
 
     <h2>Browse dorms</h2>
-    <h3>Quint</h3>
 
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Beebe">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Cazenove">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Munger">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Pomeroy">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Shafer">
-    </form>
+    <h3>Quint</h3>
+    <div class="dorm-button-row">
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Beebe">
+          <img src="/images/Beebe.png" alt="Beebe" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Cazenove">
+          <img src="/images/Cazenove.png" alt="Cazenove" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Munger">
+          <img src="/images/Munger.png" alt="Munger" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Pomeroy">
+          <img src="/images/Pomeroy.png" alt="Pomeroy" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Shafer">
+          <img src="/images/Shafer.png" alt="Shafer" style="width:160px;">
+        </button>
+      </form>
+    </div>
+    
 
     <h3>Tower Court</h3>
     <form action="/browse" method="GET">
@@ -128,25 +141,37 @@
         <p><button type="submit">Submit</button></p>
     </form>
 
-    <h3>Submission History</h3>
-    <ul>
-      <% if (submissions.length === 0) { %>
-        <li>No submissions yet.</li>
-      <% } else { %>
-        <% submissions.forEach((item, index) => { %>
-          <li>
-            <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
-            <strong>Rating:</strong> <%= item.reviews[0].rating %><br>
-            <form action="/delete" method="POST" style="display:inline;">
-              <input type="hidden" name="reshall" value="<%= item.reshall %>">
-              <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
-              <button type="submit">Delete</button>
-            </form>
-          </li>
-        <% }) %>
-      <% } %>
-    </ul>
-
+    <div class="submission-history" id="history">
+        <h3>Submission History</h3>
+        <ul>
+          <% if (submissions.length === 0) { %>
+            <li>No submissions yet.</li>
+          <% } else { %>
+            <% submissions.forEach((item) => { %>
+              <% item.reviews.forEach((review, i) => { %>
+                <li>
+                  <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
+                  <strong>User:</strong> <%= review.user %><br>
+                  <strong>Rating:</strong> <%= review.rating %><br>
+                  <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
+                  <strong>Noise:</strong> <%= review.noiseLevel %><br>
+                  <% if (review.photo) { %>
+                    <strong>Photo:</strong><br>
+                    <img src="<%= review.photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
+                  <% } %>
+                  <form action="/delete" method="POST" style="margin-top: 0.5rem;">
+                    <input type="hidden" name="reshall" value="<%= item.reshall %>">
+                    <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
+                    <button type="submit">Delete</button>
+                  </form>
+                </li>
+              <% }) %>
+            <% }) %>
+          <% } %>
+        </ul>
+      </div>
+      
+      
     <!-- load local js -->
     <script src="/main.js"></script>
 </body>

@@ -1,35 +1,50 @@
 h1 {
   font-family: 'Georgia', serif;
   font-size: 3rem;
-  color: #4B2E83;
+  color: #283618;
   text-align: center;
   margin-bottom: 1rem;
-  border-bottom: 3px solid #4B2E83;
+  border-bottom: 3px solid #283618;
   padding-bottom: 0.5rem;
 }
 
 h2 {
-  font-family: 'Arial', sans-serif;
-  font-size: 2rem;
-  color: #1B365D;
-  margin: 1.5rem 0 0.5rem;
+  font-family: 'Arial Black', sans-serif;
+  font-size: 2.2rem;
+  color: #606c38;
   text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 h3 {
   font-family: 'Courier New', monospace;
   font-size: 1.5rem;
-  color: #5C5C5C;
+  color: #606c38;
   margin-top: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-left: 5px solid #4B2E83;
+  border-left: 5px solid #283618;
   padding-left: 10px;
 }
 
 
 body {
-  background-color: rgb(247, 238, 217);
+  background-color: #fefae0;
+}
+
+.dorm-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: left;
+  margin: 1rem 0;
+}
+
+.dorm-button-row form {
+  margin: 0;
 }
 
 
@@ -56,11 +71,90 @@ body, html {
   height: 100%;
 }
 
-.hero {
-  background: url('munger.png') center center / cover no-repeat;
-  height: 100vh;
+/* Submission Form */
+#dormForm {
+  background-color: #faedcd;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(40, 54, 24, 0.15);
+  font-family: 'Helvetica Neue', sans-serif;
+  color: #283618;
+}
+
+#dormForm label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+#dormForm input[type="text"],
+#dormForm input[type="number"],
+#dormForm select,
+#dormForm input[type="file"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #fff8dc;
+}
+
+#dormForm button[type="submit"] {
+  background-color: #bc6c25;
   color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#dormForm button[type="submit"]:hover {
+  background-color: #dda15e;
+}
+
+
+/* Submission History */
+.submission-history ul {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  justify-content: left;
+}
+
+.submission-history li {
+  background-color: #faedcd;
+  border-left: 5px solid #606c38;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(40, 54, 24, 0.2);
+  padding: 1em;
+  width: 250px; /* controls card width */
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.submission-history strong {
+  color: #283618;
+}
+
+.submission-history button {
+  background-color: #bc6c25;
+  color: white;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  border: none;
+  padding: 0.4em 0.9em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submission-history button:hover {
+  background-color: #c0392b;
 }
