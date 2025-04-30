@@ -1,5 +1,4 @@
-# cs304project
-Dorm Demystified: a website for all the Wellesley dorm information you need
+# Dorm Demystified: a website for all the Wellesley dorm information you need
 
 Dorm Demystified is a website where Wellesley students can share photos of their dorm room and provide structured information about room conditions, including sunlight exposure and noise levels. 
 
