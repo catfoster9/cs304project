@@ -57,52 +57,34 @@ app.use(cookieSession({
 
 app.use('/uploads', express.static('uploads')); // folder for static files 
 
-// configure storage property of Milter from readings 
+// configure storage property of Multer from readings 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads')
     },
     filename: function (req, file, cb) {
-        let parts = file.originalname.split('.');
-        let ext = parts[parts.length-1];
-        let hhmmss = timeString();
+        let ext = path.extname(file.originalname).slice(1);
+        let hhmmss = new Date().toISOString().replace(/:/g, '-').split('.')[0];
         cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
     }
   })
 
   
 // upload using milter module 
-var upload = multer({ storage: storage,
-// max fileSize in bytes, 
-limits: { fileSize: 1_000_000 } // 1MB
-});
+var upload = multer({ storage: storage, limits: { fileSize: 10_000_000 } }); // increase size too for video
 
-
-// full handler
-app.post('/upload', upload.single('photo'), async (req, res) => {
-    console.log('uploaded data', req.body);
-    console.log('file', req.file);
-    // insert file data into mongodb
-    const db = await Connection.open(mongoUri, DB);
-    const unprot = db.collection(UNPROT);
-    const result = await unprot.insertOne({title: req.body.title,
-                                           path: '/uploads/'+req.file.filename});
-    console.log('insertOne result', result);
-    return res.redirect('/');
-});
-//error handeling for file uploads 
+// error handling middleware
 app.use((err, req, res, next) => {
     console.log('error', err);
-    if(err.code === 'LIMIT_FILE_SIZE') {
-        console.log('file too big')
-        req.flash('error', 'file too big')
-        res.redirect('/')
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        console.log('file too big');
+        req.flash('error', 'File too big');
+        res.redirect('/');
     } else {
-        console.error(err.stack)
-        res.status(500).send('Something went wrong!')
+        console.error(err.stack);
+        res.status(500).send('Something went wrong!');
     }
-})
-
+});
 // ================================================================
 // custom routes here
 
@@ -124,7 +106,7 @@ app.get('/', async (req, res) => {
 });
 
 // route to submit room upload form
-app.post('/submit', upload.single('photo'), async (req, res) => {
+app.post('/submit', upload.array('photos', 10), async (req, res) => {
     console.log("form submitted");
     const user = req.body.user;
     const reshall = req.body.reshall;
@@ -135,14 +117,15 @@ app.post('/submit', upload.single('photo'), async (req, res) => {
     const FILES = 'files';
     
     //for when a file is uploaded, will know the path 
-    let filePath = req.file ? '/uploads/' + req.file.filename : null;
+    let filePaths = req.files.map(file => '/uploads/' + file.filename);
     const review = {
         user,
         rating,
         sunlightLevel,
         noiseLevel,
-        photo: filePath 
-      };
+        photos: filePaths // array of file paths
+    };
+    
     const db = await Connection.open(mongoUri, DORM);
     const result = await db.collection(ROOMS).updateOne(
                             {reshall, roomNum}, // find documents with same reshall and roomNum 
@@ -208,7 +191,7 @@ app.post('/delete', async (req, res) => {
 
 const serverPort = cs304.getPort(8080);
 
-// this is last, because it never returns
+// start server
 app.listen(serverPort, function() {
     console.log(`open http://localhost:${serverPort}`);
 });

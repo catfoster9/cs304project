@@ -83,63 +83,7 @@
     </form>
 
 
-    <hr>
-    <h2>Upload your dorm</h2>
-    <form id="dormForm" method="POST" action="/submit">
-        <p><label>Wellesley username: <input name="user"></label></p>
-        <p><label>Residence Hall: 
-            <select name="reshall">
-                <option value="">Select building</option>
-                <option value="Beebe">Beebe</option>
-                <option value="Cazenove">Cazenove</option>
-                <option value="Munger">Munger</option>
-                <option value="Pomeroy">Pomeroy</option>
-                <option value="Shafer">Shafer</option>
-                <option value="Claflin">Claflin</option>
-                <option value="Lake House">Lake House</option>
-                <option value="Severance">Severance</option>
-                <option value="Tower">Tower</option>
-                <option value="Bates">Bates</option>
-                <option value="Freeman">Freeman</option>
-                <option value="McAfee">McAfee</option>
-                <option value="Stone-Davis">Stone-Davis</option>
-                <option value="Casa Cervantes">Casa Cervantes</option>
-                <option value="French House">French House</option>
-            </select>
-        </label></p>
-        <p><label>Room Number: <input type=number name="room"></label></p>
-        <p><label>Overall Rating: 
-            <select name="rating">
-                <option value="">Select</option>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </label></p>
-        <p><label>Sunlight:
-            <select name="sunlight">
-                <option value="">Select</option>
-                <option value="good">Good</option>
-                <option value="okay">Okay</option>
-                <option value="bad">Bad</option>
-            </select>
-        </label></p>
-        <p><label>Noise level:
-            <select name="noise">
-                <option value="">Select</option>
-                <option value="loud">Loud</option>
-                <option value="okay">Okay</option>
-                <option value="quiet">Quiet</option>
-            </select>
-        </label></p>
-
-        <input type="file" id="image" name="filename" accept="image/*">
-        
-        <p><button type="submit">Submit</button></p>
-    </form>
+    <%- include('form') %>
 
     <div class="submission-history" id="history">
         <h3>Submission History</h3>

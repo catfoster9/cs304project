@@ -3,97 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <title>Dorm Demystified</title>
-    <!-- load local stylesheet (css) -->
+
+    <!-- Custom styles -->
     <link rel="stylesheet" href="/styles.css">
-    <!-- loading jquery -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery-bundle.min.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .room-card {
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        .room-card img, .room-card video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .room-info {
+            padding: 15px;
+        }
+        .room-info h3 {
+            margin-top: 0;
+        }
+        .rating-stars {
+            color: gold;
+            font-size: 18px;
+        }
+        .lg-sub-html {
+            font-size: 14px;
+            color: white;
+            background-color: rgba(0,0,0,0.7);
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
 
-    <!--Computes average room rating-->
-    <% function avgRating(arrOfDicts) {
-        let sum = 0;
-        arrOfDicts.forEach((review) => {
-            sum += parseInt(review.rating);
-        });
-        return sum/arrOfDicts.length;
-    }%>
+<h1>Dorm Demystified</h1>
+<a href="/">Back to Home</a>
 
-     <!--Computes mode of sunlight levels-->
-     <% function avgSun(arrOfDicts) {
-        let goodCount = 0;
-        let okayCount = 0;
-        let badCount = 0;
-        let max = 'good';
-        arrOfDicts.forEach((review) => {
-            if (review.sunlightLevel == 'good') {
-                goodCount += 1;
-            } else if (review.sunlightLevel == 'okay') {
-                okayCount += 1;
-            } else {
-                badCount += 1;
-            }
-        });
-        if (okayCount > goodCount) {
-            max = 'okay';
-            if (badCount > okayCount) {
-                max = 'bad';
-            }
-        } else if (badCount > goodCount) {
-            max = 'bad';
-            if (okayCount > badCount) {
-                max = 'okay';
-            }
+<h2>Rooms in <%= reshall %>:</h2>
+
+<% function avgRating(arrOfDicts) {
+    let sum = 0;
+    arrOfDicts.forEach((review) => {
+        sum += parseInt(review.rating);
+    });
+    return sum / arrOfDicts.length;
+} %>
+
+<% function avgSun(arrOfDicts) {
+    let goodCount = 0, okayCount = 0, badCount = 0, max = 'good';
+    arrOfDicts.forEach((review) => {
+        if (review.sunlightLevel == 'good') goodCount++;
+        else if (review.sunlightLevel == 'okay') okayCount++;
+        else badCount++;
+    });
+    if (okayCount > goodCount) max = 'okay';
+    if (badCount > okayCount) max = 'bad';
+    return max;
+} %>
+
+<% function avgNoise(arrOfDicts) {
+    let loudCount = 0, okayCount = 0, quietCount = 0, max = 'quiet';
+    arrOfDicts.forEach((review) => {
+        if (review.noiseLevel == 'quiet') quietCount++;
+        else if (review.noiseLevel == 'okay') okayCount++;
+        else loudCount++;
+    });
+    if (okayCount > quietCount) max = 'okay';
+    if (loudCount > quietCount) max = 'loud';
+    return max;
+} %>
+
+<div class="grid-container">
+<% rooms.forEach((room) => { 
+    let avg = avgRating(room.reviews);
+    let sun = avgSun(room.reviews);
+    let noise = avgNoise(room.reviews);
+
+    // Collect all photos/videos for gallery
+    let galleryPhotos = [];
+    room.reviews.forEach(review => {
+        if (review.photos) {
+            review.photos.forEach(photo => {
+                galleryPhotos.push({
+                    path: photo,
+                    user: review.user
+                });
+            });
         }
-        return max;
-    }%>
+    });
+%>
+    <div class="room-card">
+        <% if (galleryPhotos.length > 0) { %>
+            <div class="room-gallery" id="gallery-<%= room.roomNum %>">
 
-     <!--Computes mode of noise levels-->
-     <% function avgNoise(arrOfDicts) {
-        let loudCount = 0;
-        let okayCount = 0;
-        let quietCount = 0;
-        let max = 'quiet';
-        arrOfDicts.forEach((review) => {
-            if (review.noiseLevel == 'quiet') {
-                quietCount += 1;
-            } else if (review.noiseLevel == 'okay') {
-                okayCount += 1;
-            } else {
-                loudCount += 1;
-            }
+                <!-- Show first photo/video as preview -->
+                <a href="<%= galleryPhotos[0].path %>" data-sub-html="Room <%= room.roomNum %> — Uploaded by <%= galleryPhotos[0].user %>">
+                    <% if (galleryPhotos[0].path.endsWith('.mp4')) { %>
+                        <video width="100%" height="200" controls>
+                            <source src="<%= galleryPhotos[0].path %>" type="video/mp4">
+                        </video>
+                    <% } else { %>
+                        <img src="<%= galleryPhotos[0].path %>" alt="Room Photo">
+                    <% } %>
+                </a>
+
+                <!-- Hidden other photos/videos for gallery navigation -->
+                <% galleryPhotos.slice(1).forEach(photoObj => {
+                    let ext = photoObj.path.split('.').pop().toLowerCase();
+                %>
+                    <a href="<%= photoObj.path %>" data-sub-html="Room <%= room.roomNum %> — Uploaded by <%= photoObj.user %><%= ext === 'mp4' ? ' (Video)' : '' %>">
+                        <% if (ext === 'mp4') { %>
+                            <video style="display:none">
+                                <source src="<%= photoObj.path %>" type="video/mp4">
+                            </video>
+                        <% } else { %>
+                            <img src="<%= photoObj.path %>" alt="Room Photo" style="display:none">
+                        <% } %>
+                    </a>
+                <% }) %>
+
+            </div>
+        <% } else { %>
+            <img src="/images/default-room.jpg" alt="No photo available" style="width: 100%; height: 200px; object-fit: cover;">
+        <% } %>
+
+        <div class="room-info">
+            <h3><%= reshall %> Room <%= room.roomNum %></h3>
+            <p><strong>Average Rating:</strong> <%= avg.toFixed(1) %> 
+                <span class="rating-stars"><%= '★'.repeat(Math.round(avg)) %></span>
+            </p>
+            <p><strong>Sunlight:</strong> <%= sun %></p>
+            <p><strong>Noise Level:</strong> <%= noise %></p>
+        </div>
+    </div>
+<% }) %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/zoom/lg-zoom.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.room-gallery').forEach(gallery => {
+        lightGallery(gallery, {
+            selector: 'a',
+            thumbnail: true,
+            zoom: true
         });
-        if (okayCount > quietCount) {
-            max = 'okay';
-            if (loudCount > okayCount) {
-                max = 'loud';
-            }
-        } else if (loudCount > quietCount) {
-            max = 'loud';
-            if (okayCount > loudCount) {
-                max = 'okay';
-            }
-        }
-        return max;
-    }%>
+    });
+});
+</script>
 
-    <h1>Dorm Demystified</h1>
-    <a href="/">Back to Home</a>
-
-    <h2> Rooms in <%= reshall %>:</h2>
-
-    <form id="ratingFilter">
-
-    </form>
-
-    <ol>
-        <% rooms.forEach( (room) => {%>
-            <li> <%= reshall %> <%= room.roomNum %> has an average rating of <%= avgRating(room.reviews) %>, 
-                <%= avgSun(room.reviews) %> sunlight, and <%= avgNoise(room.reviews) %> noise level. </li>
-        <% }); %>
-    </ol>
-
-    <!-- load local js -->
-    <script src="/main.js"></script>
 </body>
 </html>

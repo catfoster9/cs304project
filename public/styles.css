@@ -103,7 +103,7 @@ body, html {
 }
 
 #dormForm button[type="submit"] {
-  background-color: #bc6c25;
+  background-color: #606c38;
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -114,7 +114,7 @@ body, html {
 }
 
 #dormForm button[type="submit"]:hover {
-  background-color: #dda15e;
+  background-color: #4CBB17;
 }
 
 
@@ -144,7 +144,7 @@ body, html {
 }
 
 .submission-history button {
-  background-color: #bc6c25;
+  background-color: #dda15e;
   color: white;
   font-weight: bold;
   font-family: 'Arial', sans-serif;
