@@ -12,6 +12,35 @@
     <!-- Note that a nav bar was here, but causing errors. Maybe add back later. -->
     <h1>Dorm Demystified</h1>
 
+    <h2>Register:</h2>
+    <p>
+      <form action="/join" method="POST">
+          <label> Username
+              <input type="text" name="username" placeholder="og102">
+          </label>
+          <label> Password
+              <input type="text" name="password" placeholder="********">
+          </label>
+        <button type="submit">register</button>
+      </form>
+    </p>
+    <h2>Login:</h2>
+    <p>
+      <form action="/login" method="POST">
+          <label> Username
+              <input type="text" name="username" placeholder="og102">
+          </label>
+          <label> Password
+              <input type="text" name="password" placeholder="********">
+          </label>
+        <button type="submit">login</button>
+      </form>
+
+      <form action="/logout" method="POST">
+        <button type="submit">logout</button>
+      </form>
+    <%- include("partials/flashes.ejs") %>
+
     <h2>Browse dorms</h2>
 
     <h3>Quint</h3>
@@ -99,14 +128,19 @@
                   <strong>Rating:</strong> <%= review.rating %><br>
                   <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
                   <strong>Noise:</strong> <%= review.noiseLevel %><br>
-                  <% if (review.photo) { %>
-                    <strong>Photo:</strong><br>
-                    <img src="<%= review.photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
+                  <% if (review.photos && review.photos.length > 0) { %>
+                    <strong>Photos:</strong><br>
+                    <% review.photos.forEach(photo => { %>
+                      <img src="<%= photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
+                    <% }) %>
                   <% } %>
                   <form action="/delete" method="POST" style="margin-top: 0.5rem;">
                     <input type="hidden" name="reshall" value="<%= item.reshall %>">
                     <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
-                    <button type="submit">Delete</button>
+                    <input type="hidden" name="reviewIndex" value="<%= i %>">
+                    <% if (review.user === username) { %>
+                      <button type="submit">Delete</button>
+                    <% } %>
                   </form>
                 </li>
               <% }) %>
