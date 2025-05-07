@@ -155,7 +155,7 @@ h3 {
 }
 
 .submission-history button {
-  background-color: #dda15e;
+  background-color: #9e6c36;
   color: white;
   font-weight: bold;
   font-family: 'Arial', sans-serif;
@@ -185,6 +185,12 @@ h3 {
 
 .site-header h1 {
   margin: 0;
+  font-size: 4rem;
+}
+
+.site-header h2 {
+  color: #dda15e;
+  font-size: 1.2rem;
 }
 
 .site-header a {
@@ -306,7 +312,7 @@ h3 {
 }
 
 .room-page .rating-stars {
-  color: gold;
+  color: #606c38;
   font-size: 18px;
 }
 

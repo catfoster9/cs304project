@@ -99,11 +99,11 @@
                     <div class="mySlides room-<%= room.roomNum %> fade">
                         <div class="numbertext"><%= index+1 %> / <%= galleryPhotos.length %></div>
                         <% if (ext === 'mp4') { %>
-                            <video class="enlargeable" controls style="width:100%">
+                            <video class="enlargeable" controls style="width:100%" alt="Room video">
                                 <source src="<%= photoObj.path %>" type="video/mp4">
                             </video>
                         <% } else { %>
-                            <img class="enlargeable" src="<%= photoObj.path %>" style="width:100%">
+                            <img class="enlargeable" src="<%= photoObj.path %>" style="width:100%" alt="Room image">
                         <% } %>
                         <div class="captiontext">Uploaded by <%= photoObj.user %></div>
                     </div>
