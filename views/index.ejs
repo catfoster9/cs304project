@@ -8,41 +8,22 @@
     <!-- loading jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
+
 <body>
-    <!-- Note that a nav bar was here, but causing errors. Maybe add back later. -->
-    <h1>Dorm Demystified</h1>
+  <script>
+    window.loggedIn = "<%= loggedIn ? 'true' : 'false' %>";
+  </script>  
+  
+    <header class="site-header">
+      <h1><a href="/">Dorm Demystified</a></h1>
+      <h2>Find & Upload Your Wellesley Campus Home!</h2>
+    </header>
+    <%- include("partials/header", { loggedIn: loggedIn, username: username }) %>
 
-    <h2>Register:</h2>
-    <p>
-      <form action="/join" method="POST">
-          <label> Username
-              <input type="text" name="username" placeholder="og102">
-          </label>
-          <label> Password
-              <input type="text" name="password" placeholder="********">
-          </label>
-        <button type="submit">register</button>
-      </form>
-    </p>
-    <h2>Login:</h2>
-    <p>
-      <form action="/login" method="POST">
-          <label> Username
-              <input type="text" name="username" placeholder="og102">
-          </label>
-          <label> Password
-              <input type="text" name="password" placeholder="********">
-          </label>
-        <button type="submit">login</button>
-      </form>
-
-      <form action="/logout" method="POST">
-        <button type="submit">logout</button>
-      </form>
+    <%- include("partials/authModal", { loggedIn: loggedIn }) %>
     <%- include("partials/flashes.ejs") %>
 
     <h2>Browse dorms</h2>
-
     <h3>Quint</h3>
     <div class="dorm-button-row">
       <form action="/browse" method="GET">
@@ -72,85 +53,116 @@
       </form>
     </div>
     
-
-    <h3>Tower Court</h3>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Claflin">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Lake House">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Severance">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Tower">
-    </form>
-
+    <h3>Tower Complex</h3>
+    <div class="dorm-button-row">
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Claflin">
+          <img src="/images/Claflin.png" alt="Claflin" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Lake House">
+          <img src="/images/LakeHouse.png" alt="Lake House" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Severance">
+          <img src="/images/Severance.png" alt="Severance" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Tower">
+          <img src="/images/TowerCourt.png" alt="Tower" style="width:160px;">
+        </button>
+      </form>
+    </div>
+    
     <h3>East Side</h3>
-
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Bates">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Freeman">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="McAfee">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Stone-Davis">
-    </form>
-
+    <div class="dorm-button-row">
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Bates">
+          <img src="/images/Bates.png" alt="Bates" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Freeman">
+          <img src="/images/Freeman.png" alt="Freeman" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="McAfee">
+          <img src="/images/McAfee.png" alt="McAfee" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Stone-Davis">
+          <img src="/images/Stone-Davis.png" alt="Stone-Davis" style="width:160px;">
+        </button>
+      </form>
+    </div>
+    
     <h3>Language Houses</h3>
-
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="Casa Cervantes">
-    </form>
-    <form action="/browse" method="GET">
-        <input type="submit" name ="value" value="French House">
-    </form>
-
-
+    <div class="dorm-button-row">
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="Casa Cervantes">
+          <img src="/images/CasaCervantes.png" alt="Casa Cervantes" style="width:160px;">
+        </button>
+      </form>
+      <form action="/browse" method="GET">
+        <button class="image-button" type="submit" name="value" value="French House">
+          <img src="/images/FrenchHouse.png" alt="French House" style="width:160px;">
+        </button>
+      </form>
+    </div>
+    
     <%- include('form') %>
-
     <div class="submission-history" id="history">
-        <h3>Submission History</h3>
-        <ul>
-          <% if (submissions.length === 0) { %>
-            <li>No submissions yet.</li>
-          <% } else { %>
-            <% submissions.forEach((item) => { %>
-              <% item.reviews.forEach((review, i) => { %>
-                <li>
-                  <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
-                  <strong>User:</strong> <%= review.user %><br>
-                  <strong>Rating:</strong> <%= review.rating %><br>
-                  <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
-                  <strong>Noise:</strong> <%= review.noiseLevel %><br>
-                  <% if (review.photos && review.photos.length > 0) { %>
-                    <strong>Photos:</strong><br>
-                    <% review.photos.forEach(photo => { %>
-                      <img src="<%= photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
-                    <% }) %>
+      <h3>Submission History</h3>
+      <ul>
+        <% if (submissions.length === 0) { %>
+          <li>No submissions yet.</li>
+        <% } else { %>
+          <% submissions.forEach((item) => { %>
+            <% item.reviews.forEach((review, i) => { %>
+              <li>
+                <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
+                <strong>User:</strong> <%= review.user %><br>
+                <strong>Rating:</strong> <%= review.rating %><br>
+                <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
+                <strong>Noise:</strong> <%= review.noiseLevel %><br>
+                <% if (review.photos && review.photos.length > 0) { %>
+                  <strong>Photos / Videos:</strong><br>
+                  <% review.photos.forEach(photo => { 
+                    let ext = photo.split('.').pop().toLowerCase();
+                  %>
+                      <% if (ext === 'mp4' || ext === 'mov' || ext === 'webm') { %>
+                          <video width="150" controls style="margin-top: 5px;">
+                              <source src="<%= photo %>" type="video/<%= ext %>">
+                              Your browser does not support the video tag.
+                          </video><br>
+                      <% } else { %>
+                          <img src="<%= photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
+                      <% } %>
+                  <% }) %>
+                <% } %>
+                <form action="/delete" method="POST" class="require-login" style="margin-top: 0.5rem;">
+                  <input type="hidden" name="reshall" value="<%= item.reshall %>">
+                  <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
+                  <input type="hidden" name="reviewIndex" value="<%= i %>">
+                  <% if (review.user === username) { %>
+                    <button type="submit">Delete</button>
                   <% } %>
-                  <form action="/delete" method="POST" style="margin-top: 0.5rem;">
-                    <input type="hidden" name="reshall" value="<%= item.reshall %>">
-                    <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
-                    <input type="hidden" name="reviewIndex" value="<%= i %>">
-                    <% if (review.user === username) { %>
-                      <button type="submit">Delete</button>
-                    <% } %>
-                  </form>
-                </li>
-              <% }) %>
+                </form>
+              </li>
             <% }) %>
-          <% } %>
-        </ul>
-      </div>
+          <% }) %>
+        <% } %>
+      </ul>
+  </div>
+  
       
-      
-    <!-- load local js -->
-    <script src="/main.js"></script>
+  <script src="main.js"></script>   
+  <script src="/scripts/login.js"></script>    
 </body>
 </html>
+

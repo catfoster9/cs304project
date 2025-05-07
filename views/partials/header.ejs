@@ -1,0 +1,10 @@
+<header style="background-color:#f8f8f8; padding: 10px;">
+  <% if (!loggedIn) { %>
+    <button onclick="showAuthModal()">Login / Register</button>
+  <% } else { %>
+    <span>Welcome, <%= username %>!</span>
+    <form action="/logout" method="POST" style="display:inline">
+      <button type="submit">Logout</button>
+    </form>
+  <% } %>
+</header>

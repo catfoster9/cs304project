@@ -1,3 +1,19 @@
+/* ====================================
+   GENERAL PAGE STYLES
+==================================== */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  height: 100%;
+  background-color: #fefae0;
+}
+
+/* ------------------------------------
+   HEADINGS (H1, H2, H3)
+------------------------------------ */
+
 h1 {
   font-family: 'Georgia', serif;
   font-size: 3rem;
@@ -30,10 +46,9 @@ h3 {
   padding-left: 10px;
 }
 
-
-body {
-  background-color: #fefae0;
-}
+/* ====================================
+   DORM BUTTON ROW (Homepage)
+==================================== */
 
 .dorm-button-row {
   display: flex;
@@ -46,7 +61,6 @@ body {
 .dorm-button-row form {
   margin: 0;
 }
-
 
 .image-button {
   border: none;
@@ -64,14 +78,10 @@ body {
   transform: translateY(-5px);
 }
 
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Helvetica Neue', sans-serif;
-  height: 100%;
-}
+/* ====================================
+   SUBMISSION FORM (form.ejs)
+==================================== */
 
-/* Submission Form */
 #dormForm {
   background-color: #faedcd;
   padding: 2rem;
@@ -79,7 +89,6 @@ body, html {
   max-width: 600px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(40, 54, 24, 0.15);
-  font-family: 'Helvetica Neue', sans-serif;
   color: #283618;
 }
 
@@ -117,8 +126,10 @@ body, html {
   background-color: #4CBB17;
 }
 
+/* ====================================
+   SUBMISSION HISTORY (index.ejs)
+==================================== */
 
-/* Submission History */
 .submission-history ul {
   display: flex;
   flex-wrap: wrap;
@@ -134,7 +145,7 @@ body, html {
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(40, 54, 24, 0.2);
   padding: 1em;
-  width: 250px; /* controls card width */
+  width: 250px;
   box-sizing: border-box;
   flex-shrink: 0;
 }
@@ -157,4 +168,236 @@ body, html {
 
 .submission-history button:hover {
   background-color: #c0392b;
+}
+
+/* ====================================
+   HEADER (Sticky Navigation)
+==================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  background-color: #283618;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.site-header h1 {
+  margin: 0;
+}
+
+.site-header a {
+  text-decoration: none;
+  color: #dda15e;
+}
+
+/* ====================================
+   LOGIN & REGISTER MODAL
+==================================== */
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  border-radius: 8px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ====================================
+   IMAGE/VIDEO VIEWER MODAL
+==================================== */
+
+.viewer-modal {
+  display: none;
+  position: fixed;
+  z-index: 5000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.viewer-content {
+  background-color: transparent;
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.viewer-close {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.viewer-close:hover {
+  color: #bbb;
+}
+
+/* ====================================
+   ROOM LIST PAGE
+==================================== */
+
+.room-page .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.room-page .room-card {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background-color: white;
+  position: relative;
+}
+
+.room-page .room-card img, 
+.room-page .room-card video {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.room-page .room-info {
+  padding: 15px;
+}
+
+.room-page .room-info h3 {
+  margin-top: 0;
+}
+
+.room-page .rating-stars {
+  color: gold;
+  font-size: 18px;
+}
+
+.room-page .mySlides {
+  display: none;
+  position: relative;
+}
+
+.room-page .numbertext, 
+.room-page .captiontext {
+  color: white;
+  position: absolute;
+  background-color: rgba(0,0,0,0.6);
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.room-page .numbertext {
+  top: 0;
+  left: 0;
+}
+
+.room-page .captiontext {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.room-page .prev, 
+.room-page .next {
+  cursor: pointer;
+  position: absolute;
+  top: 30%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  line-height: 40px;
+  user-select: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+.room-page .prev {
+  left: 0%;
+}
+
+.room-page .next {
+  right: 0%;
+}
+
+.room-page .prev:hover, 
+.room-page .next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.2);
+}
+
+.room-page .modal {
+  display: none;
+  position: fixed;
+  z-index: 5000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.room-page .modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.room-page .close {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.room-page .close:hover {
+  color: #bbb;
 }

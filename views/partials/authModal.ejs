@@ -1,0 +1,58 @@
+<!-- AUTH MODAL -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+  
+      <% if (!loggedIn) { %>
+      <p>You need to register or log in!</p>
+      <h3>Register</h3>
+      <form action="/join" method="POST">
+        <label>Username
+          <input type="text" name="username" placeholder="og102">
+        </label><br>
+        <label>Password
+          <input type="password" name="password" placeholder="********">
+        </label><br>
+        <button type="submit">Register</button>
+      </form>
+  
+      <h3>Login</h3>
+      <form action="/login" method="POST">
+        <label>Username
+          <input type="text" name="username" placeholder="og102">
+        </label><br>
+        <label>Password
+          <input type="password" name="password" placeholder="********">
+        </label><br>
+        <button type="submit">Login</button>
+      </form>
+      <% } else { %>
+        <p>You are already logged in.</p>
+        <form action="/logout" method="POST">
+          <button type="submit">Logout</button>
+        </form>
+      <% } %>
+  
+    </div>
+  </div>
+  
+  <script>
+  var modal = document.getElementById("authModal");
+  var span = document.getElementsByClassName("close")[0];
+  
+  // Close modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  
+  function showAuthModal() {
+    modal.style.display = "block";
+  }
+  </script>
+  

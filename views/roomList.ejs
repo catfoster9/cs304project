@@ -4,55 +4,36 @@
     <meta charset="UTF-8">
     <title>Dorm Demystified</title>
 
-    <!-- Custom styles -->
     <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery-bundle.min.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-        .room-card {
-            border: 1px solid #ccc;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            background-color: white;
-        }
-        .room-card img, .room-card video {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .room-info {
-            padding: 15px;
-        }
-        .room-info h3 {
-            margin-top: 0;
-        }
-        .rating-stars {
-            color: gold;
-            font-size: 18px;
-        }
-        .lg-sub-html {
-            font-size: 14px;
-            color: white;
-            background-color: rgba(0,0,0,0.7);
-            padding: 8px;
-        }
-    </style>
 </head>
-<body>
+<body class="room-page">
 
 <h1>Dorm Demystified</h1>
 <a href="/">Back to Home</a>
 
 <h2>Rooms in <%= reshall %>:</h2>
+<form id="filterForm">
+    <label for="floorFilter">Filter by Floor:</label>
+    <select id="floorFilter">
+        <option value="all">All Floors</option>
+        <% 
+        // Dynamically generate floor numbers based on rooms
+        let floors = [...new Set(rooms.map(room => room.roomNum.toString().charAt(0)))].sort();
+        floors.forEach(floor => { 
+        %>
+            <option value="<%= floor %>"><%= floor %> Floor</option>
+        <% }); %>
+    </select>
+
+    <label for="sortRating">Sort by Rating:</label>
+    <select id="sortRating">
+        <option value="default">Default (Room Number)</option>
+        <option value="rating">Rating (High to Low)</option>
+    </select>
+</form>
+
+
 
 <% function avgRating(arrOfDicts) {
     let sum = 0;
@@ -92,7 +73,7 @@
     let sun = avgSun(room.reviews);
     let noise = avgNoise(room.reviews);
 
-    // Collect all photos/videos for gallery
+    // Collect all photos/videos
     let galleryPhotos = [];
     room.reviews.forEach(review => {
         if (review.photos) {
@@ -105,39 +86,34 @@
         }
     });
 %>
-    <div class="room-card">
+    <div class="room-card" data-roomnum="<%= room.roomNum %>" data-rating="<%= avg %>">
+
+
+
         <% if (galleryPhotos.length > 0) { %>
-            <div class="room-gallery" id="gallery-<%= room.roomNum %>">
+            <div class="slideshow-container" id="gallery-<%= room.roomNum %>">
 
-                <!-- Show first photo/video as preview -->
-                <a href="<%= galleryPhotos[0].path %>" data-sub-html="Room <%= room.roomNum %> — Uploaded by <%= galleryPhotos[0].user %>">
-                    <% if (galleryPhotos[0].path.endsWith('.mp4')) { %>
-                        <video width="100%" height="200" controls>
-                            <source src="<%= galleryPhotos[0].path %>" type="video/mp4">
-                        </video>
-                    <% } else { %>
-                        <img src="<%= galleryPhotos[0].path %>" alt="Room Photo">
-                    <% } %>
-                </a>
-
-                <!-- Hidden other photos/videos for gallery navigation -->
-                <% galleryPhotos.slice(1).forEach(photoObj => {
+                <% galleryPhotos.forEach((photoObj, index) => { 
                     let ext = photoObj.path.split('.').pop().toLowerCase();
                 %>
-                    <a href="<%= photoObj.path %>" data-sub-html="Room <%= room.roomNum %> — Uploaded by <%= photoObj.user %><%= ext === 'mp4' ? ' (Video)' : '' %>">
+                    <div class="mySlides room-<%= room.roomNum %> fade">
+                        <div class="numbertext"><%= index+1 %> / <%= galleryPhotos.length %></div>
                         <% if (ext === 'mp4') { %>
-                            <video style="display:none">
+                            <video class="enlargeable" controls style="width:100%">
                                 <source src="<%= photoObj.path %>" type="video/mp4">
                             </video>
                         <% } else { %>
-                            <img src="<%= photoObj.path %>" alt="Room Photo" style="display:none">
+                            <img class="enlargeable" src="<%= photoObj.path %>" style="width:100%">
                         <% } %>
-                    </a>
+                        <div class="captiontext">Uploaded by <%= photoObj.user %></div>
+                    </div>
                 <% }) %>
 
+                <a class="prev" onclick="plusSlides(-1, '<%= room.roomNum %>')">&#10094;</a>
+                <a class="next" onclick="plusSlides(1, '<%= room.roomNum %>')">&#10095;</a>
             </div>
         <% } else { %>
-            <img src="/images/default-room.jpg" alt="No photo available" style="width: 100%; height: 200px; object-fit: cover;">
+            <img src="/images/NoRoom.png" alt="No photo available" style="width: 100%; height: 200px; object-fit: cover;">
         <% } %>
 
         <div class="room-info">
@@ -152,21 +128,16 @@
 <% }) %>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/zoom/lg-zoom.min.js"></script>
+<!-- For enlarge viewer -->
+<div id="viewerModal" class="viewer-modal">
+    <span class="viewer-close">&times;</span>
+    <div class="viewer-content" id="viewerContent"></div>
+  </div>
+  
+<script src="/scripts/slideshow.js"></script>
+<script src="/scripts/modal.js"></script>
+<script src="/scripts/filter.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.room-gallery').forEach(gallery => {
-        lightGallery(gallery, {
-            selector: 'a',
-            thumbnail: true,
-            zoom: true
-        });
-    });
-});
-</script>
 
 </body>
 </html>

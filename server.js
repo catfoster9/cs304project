@@ -69,7 +69,9 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         let ext = path.extname(file.originalname).slice(1);
         let hhmmss = new Date().toISOString().replace(/:/g, '-').split('.')[0];
-        cb(null, file.fieldname + '-' + hhmmss + '.' + ext);
+        let uniqueSuffix = Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + hhmmss + '-' + uniqueSuffix + '.' + ext);
+
     }
   })
 
@@ -202,7 +204,7 @@ app.post('/submit', upload.array('photos', 10), async (req, res) => {
     if (!req.session.loggedIn) {
         req.flash('error', 'You must be logged in to upload a dorm.');
         return res.redirect('/');
-      }
+    }
 
     console.log("form submitted");
     const user = req.session.username;
@@ -211,29 +213,40 @@ app.post('/submit', upload.array('photos', 10), async (req, res) => {
     const rating = req.body.rating;
     const sunlightLevel = req.body.sunlight;
     const noiseLevel = req.body.noise;
-    const FILES = 'files';
-    
-    //for when a file is uploaded, will know the path 
+
     let filePaths = req.files.map(file => '/uploads/' + file.filename);
+
+    const db = await Connection.open(mongoUri, DORM);
+
+    // CHECK IF user already reviewed this room
+    const room = await db.collection(ROOMS).findOne({ reshall, roomNum });
+
+    if (room) {
+        const alreadyReviewed = room.reviews.some(review => review.user === user);
+        if (alreadyReviewed) {
+            req.flash('error', 'You have already submitted a review for this room.');
+            return res.redirect('/');
+        }
+    }
+
+    // Otherwise, proceed with adding review
     const review = {
         user,
         rating,
         sunlightLevel,
         noiseLevel,
-        photos: filePaths // array of file paths
+        photos: filePaths
     };
-    
-    const db = await Connection.open(mongoUri, DORM);
-    const result = await db.collection(ROOMS).updateOne(
-                            {reshall, roomNum}, // find documents with same reshall and roomNum 
-                            { 
-                                $push: {reviews: review}, // create a list of reviews
-                                $setOnInsert: {reshall, roomNum}, // reshall and roomNum are not a list
-                              },
-                            {upsert: true}, // insert if no reviews for the room already exist 
-                            
 
+    const result = await db.collection(ROOMS).updateOne(
+        { reshall, roomNum },
+        {
+            $push: { reviews: review },
+            $setOnInsert: { reshall, roomNum }
+        },
+        { upsert: true }
     );
+
     res.redirect('/');
 });
 
@@ -253,21 +266,58 @@ app.post('/delete', async (req, res) => {
     const reshall = req.body.reshall;
     const roomNum = req.body.roomNum;
     const username = req.session.username;
-    const reviewIndex = parseInt(req.body.reviewIndex); // find which specific review index to delete
+    const reviewIndex = parseInt(req.body.reviewIndex);
 
     const db = await Connection.open(mongoUri, DORM);
-    const room = await db.collection(ROOMS).findOne({reshall: reshall, roomNum: roomNum});
+    const room = await db.collection(ROOMS).findOne({ reshall, roomNum });
+
+    if (!room) {
+        req.flash('error', 'Room not found.');
+        return res.redirect('/');
+    }
+
     const review = room.reviews[reviewIndex];
-    if (review.user !== username) {
+
+    // Check authorization
+    if (!review || review.user !== username) {
         req.flash('error', 'You are not authorized to delete this review.');
         return res.redirect('/');
     }
 
+    // Remove the review
     room.reviews.splice(reviewIndex, 1);
-    await db.collection(ROOMS).updateOne({reshall, roomNum},
-                                        {$set: {reviews: room.reviews}});
+
+    if (room.reviews.length === 0) {
+        // No reviews left -> delete entire room document
+        await db.collection(ROOMS).deleteOne({ reshall, roomNum });
+        console.log(`Deleted entire room: ${reshall} ${roomNum}`);
+    } else {
+        // Update the reviews array
+        await db.collection(ROOMS).updateOne(
+            { reshall, roomNum },
+            { $set: { reviews: room.reviews } }
+        );
+        console.log(`Deleted review from room: ${reshall} ${roomNum}`);
+    }
 
     res.redirect('/');
+});
+
+
+// CLEAN UP ROUTE - to delete all rooms that are already empty
+// app.get('/cleanup-empty-rooms', async (req, res) => {
+//     const db = await Connection.open(mongoUri, DORM);
+    
+//     const result = await db.collection(ROOMS).deleteMany({ reviews: { $size: 0 } });
+
+//     res.send(`Deleted ${result.deletedCount} empty rooms.`);
+// });
+
+
+app.get('/debug/rooms', async (req, res) => {
+    const db = await Connection.open(mongoUri, DORM);
+    const rooms = await db.collection(ROOMS).find({}).toArray();
+    res.json(rooms);
 });
 
 
