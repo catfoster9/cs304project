@@ -124,36 +124,38 @@
         <% } else { %>
           <% submissions.forEach((item) => { %>
             <% item.reviews.forEach((review, i) => { %>
-              <li>
-                <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
-                <strong>User:</strong> <%= review.user %><br>
-                <strong>Rating:</strong> <%= review.rating %><br>
-                <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
-                <strong>Noise:</strong> <%= review.noiseLevel %><br>
-                <% if (review.photos && review.photos.length > 0) { %>
-                  <strong>Photos / Videos:</strong><br>
-                  <% review.photos.forEach(photo => { 
-                    let ext = photo.split('.').pop().toLowerCase();
-                  %>
-                      <% if (ext === 'mp4' || ext === 'mov' || ext === 'webm') { %>
-                          <video width="150" controls style="margin-top: 5px;">
-                              <source src="<%= photo %>" type="video/<%= ext %>">
-                              Your browser does not support the video tag.
-                          </video><br>
-                      <% } else { %>
-                          <img src="<%= photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
-                      <% } %>
-                  <% }) %>
-                <% } %>
-                <form action="/delete" method="POST" class="require-login" style="margin-top: 0.5rem;">
-                  <input type="hidden" name="reshall" value="<%= item.reshall %>">
-                  <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
-                  <input type="hidden" name="reviewIndex" value="<%= i %>">
-                  <% if (review.user === username) { %>
-                    <button type="submit">Delete</button>
+              <% if (review.user == username) { %>
+                <li>
+                  <strong>Room:</strong> <%= item.reshall %> <%= item.roomNum %><br>
+                  <strong>User:</strong> <%= review.user %><br>
+                  <strong>Rating:</strong> <%= review.rating %><br>
+                  <strong>Sunlight:</strong> <%= review.sunlightLevel %><br>
+                  <strong>Noise:</strong> <%= review.noiseLevel %><br>
+                  <% if (review.photos && review.photos.length > 0) { %>
+                    <strong>Photos / Videos:</strong><br>
+                    <% review.photos.forEach(photo => { 
+                      let ext = photo.split('.').pop().toLowerCase();
+                    %>
+                        <% if (ext === 'mp4' || ext === 'mov' || ext === 'webm') { %>
+                            <video width="150" controls style="margin-top: 5px;">
+                                <source src="<%= photo %>" type="video/<%= ext %>">
+                                Your browser does not support the video tag.
+                            </video><br>
+                        <% } else { %>
+                            <img src="<%= photo %>" alt="Room photo" style="width: 100px; border-radius: 6px; margin-top: 5px;"><br>
+                        <% } %>
+                    <% }) %>
                   <% } %>
-                </form>
-              </li>
+                  <form action="/delete" method="POST" class="require-login" style="margin-top: 0.5rem;">
+                    <input type="hidden" name="reshall" value="<%= item.reshall %>">
+                    <input type="hidden" name="roomNum" value="<%= item.roomNum %>">
+                    <input type="hidden" name="reviewIndex" value="<%= i %>">
+                    <% if (review.user === username) { %>
+                      <button type="submit">Delete</button>
+                    <% } %>
+                  </form>
+                </li>
+                <% } %>
             <% }) %>
           <% }) %>
         <% } %>
