@@ -69,9 +69,9 @@
 
 <div class="grid-container">
 <% rooms.forEach((room) => { 
-    let avg = avgRating(room.reviews);
-    let sun = avgSun(room.reviews);
-    let noise = avgNoise(room.reviews);
+    let avg = room.avgRating;
+    let sun = room.light;
+    let noise = room.noise;
 
     // Collect all photos/videos
     let galleryPhotos = [];

@@ -199,9 +199,80 @@ app.post('/logout', (req,res) => {
     }
 });
 
+// Compute average room rating
+function getAvgRating(roomDoc, review) {
+    let avgRating = 0;
+    if (roomDoc) {
+        let sum = parseInt(review.rating);
+        roomDoc.reviews.forEach((roomReview) => {
+            sum += parseInt(roomReview.rating);
+        });
+        avgRating = sum / (roomDoc.reviews.length + 1);
+    } else {
+        avgRating = parseInt(review.rating);
+    }
+    return avgRating;
+}
+
+// Compute most frequent noise level
+function getModeNoise(roomDoc, review) {
+    let loudCount = 0, okayCount = 0, quietCount = 0, modeNoise = review.noiseLevel;   
+    if (roomDoc) {
+        if (review.noiseLevel == "quiet") {
+            quietCount++;
+        } else if (review.noiseLevel == "okay") {
+            okayCount++;
+        } else if (review.noiseLevel == "loud") {
+            loudCount++;
+        }
+        roomDoc.reviews.forEach((roomReview) => {
+            if (roomReview.noiseLevel == 'quiet') quietCount++;
+            else if (roomReview.noiseLevel == 'okay') okayCount++;
+            else if (roomReview.noiseLevel == 'loud') loudCount++;
+        });
+        if (okayCount >= quietCount && okayCount >= loudCount) {
+            modeNoise = 'okay';
+        } else if (quietCount >= okayCount && quietCount >= loudCount) {
+            modeNoise = 'quiet';
+        } else if (loudCount > okayCount && loudCount > quietCount) {
+            modeNoise = 'loud';
+        }
+    }
+    return modeNoise;
+}
+
+// Compute most frequent sunlight level
+function getModeLight(roomDoc, review) {
+    let goodCount = 0, midCount = 0, badCount = 0, modeLight = review.sunlightLevel;
+    if (roomDoc) { 
+        if (review.sunlightLevel == "good") {
+            goodCount++;
+        } else if (review.sunlightLevel == "okay") {
+            midCount++;
+        } else if (review.sunlightLevel == "bad") {
+            badCount++;
+        }
+        roomDoc.reviews.forEach((roomReview) => {
+            if (roomReview.sunlightLevel == 'good') goodCount++;
+            else if (roomReview.noiseLevel == 'okay') midCount++;
+            else if (roomReview.noiseLevel == 'bad') badCount++;
+        });
+        if (midCount >= goodCount && midCount >= goodCount) {
+            modeLight = 'okay';
+        } else if (goodCount >= midCount && goodCount >= badCount) {
+            modeLight = 'good';
+        } else if (badCount > midCount && badCount > goodCount) {
+            modeLight = 'bad';
+        }
+    }
+    return modeLight;
+}
+
+
 // route to submit room upload form
-app.post('/submit', upload.array('photos', 10), async (req, res) => {
+app.post('/submit-review', upload.array('photos', 10), async (req, res) => {
     if (!req.session.loggedIn) {
+        // Only allow logged in users to submit form
         req.flash('error', 'You must be logged in to upload a dorm.');
         return res.redirect('/');
     }
@@ -238,11 +309,18 @@ app.post('/submit', upload.array('photos', 10), async (req, res) => {
         photos: filePaths
     };
 
+    // compute average rating, noise level, and sunlight level
+    let avgRating = getAvgRating(room, review);
+    let modeNoise = getModeNoise(room, review);
+    let modeLight = getModeLight(room, review);
+
+    // Insert review into room document
     const result = await db.collection(ROOMS).updateOne(
-        { reshall, roomNum },
+        {reshall, roomNum},
         {
-            $push: { reviews: review },
-            $setOnInsert: { reshall, roomNum }
+            $push: {reviews: review},
+            $setOnInsert: {reshall, roomNum},
+            $set: {avgRating: avgRating, light: modeLight, noise: modeNoise}
         },
         { upsert: true }
     );
@@ -262,7 +340,7 @@ app.get('/browse', async (req, res) => {
 });
 
 // route to delete a room
-app.post('/delete', async (req, res) => {
+app.post('/delete-room', async (req, res) => {
     const reshall = req.body.reshall;
     const roomNum = req.body.roomNum;
     const username = req.session.username;
