@@ -33,40 +33,6 @@
     </select>
 </form>
 
-
-
-<% function avgRating(arrOfDicts) {
-    let sum = 0;
-    arrOfDicts.forEach((review) => {
-        sum += parseInt(review.rating);
-    });
-    return sum / arrOfDicts.length;
-} %>
-
-<% function avgSun(arrOfDicts) {
-    let goodCount = 0, okayCount = 0, badCount = 0, max = 'good';
-    arrOfDicts.forEach((review) => {
-        if (review.sunlightLevel == 'good') goodCount++;
-        else if (review.sunlightLevel == 'okay') okayCount++;
-        else badCount++;
-    });
-    if (okayCount > goodCount) max = 'okay';
-    if (badCount > okayCount) max = 'bad';
-    return max;
-} %>
-
-<% function avgNoise(arrOfDicts) {
-    let loudCount = 0, okayCount = 0, quietCount = 0, max = 'quiet';
-    arrOfDicts.forEach((review) => {
-        if (review.noiseLevel == 'quiet') quietCount++;
-        else if (review.noiseLevel == 'okay') okayCount++;
-        else loudCount++;
-    });
-    if (okayCount > quietCount) max = 'okay';
-    if (loudCount > quietCount) max = 'loud';
-    return max;
-} %>
-
 <div class="grid-container">
 <% rooms.forEach((room) => { 
     let avg = room.avgRating;
