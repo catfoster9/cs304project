@@ -4,6 +4,6 @@ Dorm Demystified is a website where Wellesley students can share photos of their
 
 Authors: Rachel Ren, Shawfong Hsu, Catherine Foster
 
-Status: Draft version
+Status: Beta version
 
 Directions to use: users with permissions can run the command "node server.js" from the cs304project directory
